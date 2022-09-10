@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:accountDb
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    #show-sql: true
+    defer-datasource-initialization: true
+
+com.marcelocastro:
+    hashids:
+      salt: mySpecialSalt
+      min-hash-length: 8
+      alphabet: 9RGDO7LBY6ZN8EMVW2K435Q1
