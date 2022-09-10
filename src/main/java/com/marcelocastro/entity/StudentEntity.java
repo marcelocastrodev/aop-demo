@@ -30,6 +30,4 @@ public class StudentEntity {
   @Transient
   @JsonAlias("id")
   private String idString;
-
-
 }

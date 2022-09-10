@@ -1,6 +1,5 @@
 package com.marcelocastro.service;
 
-import com.marcelocastro.dto.StudentDto;
 import com.marcelocastro.entity.StudentEntity;
 import com.marcelocastro.repository.StudentRepository;
 import java.util.List;
