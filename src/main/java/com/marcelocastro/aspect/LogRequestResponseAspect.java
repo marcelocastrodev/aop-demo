@@ -10,7 +10,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Aspect
-@Order(1)
+@Order(2)
 @Component
 @Slf4j
 public class LogRequestResponseAspect {
