@@ -1,12 +1,12 @@
 # AOP DEMO
 
-AOP is a technique that promotes separation of concerns by providing additional capabilities to components that already
-contain a specific responsibility.
+AOP (Aspect Oriented Programing) is a technique that promotes separation of concerns by providing additional
+capabilities to components that already contain a specific responsibility.
 
-Please read [THIS](https://docs.spring.io/spring-framework/docs/2.5.0/reference/aop.html) to have a complete
+Read [THIS](https://docs.spring.io/spring-framework/docs/2.5.0/reference/aop.html) to have a complete
 understanding of AOP.
 
-This project presents 2 different approaches to use AOP:
+This project presents 2 different AOP approaches:
 
 * The first approach is exhaustively cited in articles and tutorials out there, it determines how to log the input and
   output of any desired method.
@@ -92,11 +92,11 @@ It's time to define the advice:
 ```java
 @Around("annotatedMethod() || publicMethodsWithinAnnotatedClass()")
 public Object logExecutionTime(ProceedingJoinPoint joinPoint)throws Throwable{
-  log.info(joinPoint.getSignature()+" Request arguments: {}",joinPoint.getArgs());
-  Object proceed=joinPoint.proceed();
-  log.info(joinPoint.getSignature()+" Response: {} ",Objects.isNull(proceed)?"{}":proceed);
-  return proceed;
-}
+    log.info(joinPoint.getSignature()+" Request arguments: {}",joinPoint.getArgs());
+    Object proceed=joinPoint.proceed();
+    log.info(joinPoint.getSignature()+" Response: {} ",Objects.isNull(proceed)?"{}":proceed);
+    return proceed;
+    }
 ```
 
 Because the advice is of type @Around, the methods has the opportunity to log information before and after the
@@ -179,13 +179,16 @@ Discipline, etc). This prefix is going to be used to for part of the encoded num
 Create a new component:
 
 ```java
+
 @Aspect
 @Order(1)
 @Component
 @Slf4j
 public class HashidsAspect {
+
 }
 ```
+
 The class is annotated with the following:
 
 * **@Component** to turn this into a spring component;
@@ -197,64 +200,67 @@ It's time to define the advice:
 
 ```java
 @Around("within(com.marcelocastro..controller..*)")
-public Object applyHashids(ProceedingJoinPoint joinPoint) throws Throwable {
-  Object[] args = applyHashidsInParameters(joinPoint);
-  List<Object> argsHashed = Arrays.stream(args)
+public Object applyHashids(ProceedingJoinPoint joinPoint)throws Throwable{
+    Object[]args=applyHashidsInParameters(joinPoint);
+    List<Object> argsHashed=Arrays.stream(args)
     .map(this::applyHashids)
     .toList();
-  Object proceed = joinPoint.proceed(argsHashed.toArray());
-  applyHashids(proceed);
-  return proceed;
-}
+    Object proceed=joinPoint.proceed(argsHashed.toArray());
+    applyHashids(proceed);
+    return proceed;
+    }
 ```
-Because the advice is of type @Around, the method has the opportunity to capture the original data from the join point, 
-determine if there's a parameter annotated with @Hashids or check if the request/response body is related to a Hasheable 
+
+Because the advice is of type @Around, the method has the opportunity to capture the original data from the join point,
+determine if there's a parameter annotated with @Hashids or check if the request/response body is related to a Hasheable
 DTO class that also might contain a @Hashids annotation.
 
 When calling the endpoint ```http://localhost:8080/students```, instead of returning the json below:
 
 ```json
 [
-    {
-        "id": 1,
-        "firstName": "Michael",
-        "lastName": "Jordan",
-        "email": "michael.jordan@nba.com"
-    },
-    {
-        "id": 2,
-        "firstName": "Magic",
-        "lastName": "Johnson",
-        "email": "magic.johnson@nba.com"
-    },
-    {
-        "id": 3,
-        "firstName": "Larry",
-        "lastName": "Bird",
-        "email": "larry.bird@nba.com"
-    }
+  {
+    "id": 1,
+    "firstName": "Michael",
+    "lastName": "Jordan",
+    "email": "michael.jordan@nba.com"
+  },
+  {
+    "id": 2,
+    "firstName": "Magic",
+    "lastName": "Johnson",
+    "email": "magic.johnson@nba.com"
+  },
+  {
+    "id": 3,
+    "firstName": "Larry",
+    "lastName": "Bird",
+    "email": "larry.bird@nba.com"
+  }
 ]
 ```
+
 The AOP will return a collection of students with the id encoded:
+
 ```json
 [
-    {
-        "id": "STD-KZB5B18Y",
-        "firstName": "Michael",
-        "lastName": "Jordan",
-        "email": "michael.jordan@nba.com"
-    },
-    {
-        "id": "STD-M6Q8VW5N",
-        "firstName": "Magic",
-        "lastName": "Johnson",
-        "email": "magic.johnson@nba.com"
-    },
-    {
-        "id": "STD-3KW56K8V",
-        "firstName": "Larry",
-        "lastName": "Bird",
-        "email": "larry.bird@nba.com"
-    }
+  {
+    "id": "STD-KZB5B18Y",
+    "firstName": "Michael",
+    "lastName": "Jordan",
+    "email": "michael.jordan@nba.com"
+  },
+  {
+    "id": "STD-M6Q8VW5N",
+    "firstName": "Magic",
+    "lastName": "Johnson",
+    "email": "magic.johnson@nba.com"
+  },
+  {
+    "id": "STD-3KW56K8V",
+    "firstName": "Larry",
+    "lastName": "Bird",
+    "email": "larry.bird@nba.com"
+  }
 ]
 ```
